@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>Robot Control</title>
+<style>
+body {
+    font-family: sans-serif;
+    color: #555;
+    background-color: #eee;
+    padding-right: 50px;
+    min-width: 900px;
+}
+.container {
+    margin: 10px;
+    border: 5px solid #555;
+    display: table;
+    width:100%;
+    table-layout: fixed;
+    text-align: center;
+}
+.item {
+    border: 5px solid #555;
+    display: table-cell;
+    height: 200px;
+    vertical-align: middle;
+    font-size: 500%;
+}
+.item button {
+    background-color: transparent;
+    position: absolute;
+    left: -1000px;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+</style>
+<script language="javascript">
+    console.log("robotWebUi.js : server IP= "+document.location.host);
+    var sock = new WebSocket("ws://"+document.location.host, "protocolOne");
+    
+    sock.onopen = function (event) {
+         console.log("r control : I am connected to server.....");
+ 		//document.getElementById("connection").value = 'CONNECTED';
+    };
+    sock.onmessage = function (event) {
+        console.log("on message" + event.data);
+        document.getElementById('IMG').setAttribute( 'src', event.data );
+        //alert( "onmessage " + event);
+ 		//document.getElementById("state").value = ""+event.data;
+    }
+    sock.onerror = function (error) {
+        console.log('WebSocket Error',  error);
+        //document.getElementById("state").value = ""+error;
+    };
+    
+	function send(message) {
+        console.log('WebSocket try to send',  message);
+		sock.send(message);
+	};
+	
+	document.onkeydown = function(event) {
+		    event = event || window.event;
+		    switch (event.keyCode || event.which) {
+		        case 65:
+		            send('a');
+		            break;
+		        case 68:
+		            send('d');
+		            break;
+		        case 87:
+		            send('w');
+		            break;
+		        case 83:
+		            send('s');
+		            break;
+		        default:
+		            send('h');
+		    }
+
+	};
+</script>
+</head>
+<body>
+<div id="all">
+
+    <div class="container">
+        <label class="item">FORWARD<button onclick="send('w')"></button></label>
+    </div>
+    <div class="container">
+        <label class="item">LEFT<button onclick="send('a')"></button></label>
+        <label class="item">STOP<button onclick="send('h')"></button></label>
+        <label class="item">RIGHT<button onclick="send('d')"></button></label>
+    </div>
+    <div class="container">
+        <label class="item">BACKWARD<button onclick="send('s')"></button></label>
+    </div>
+    <div class="container">
+        <label class="item">UP<button onclick="send('k')"></button></label>
+        <label class="item">DOWN<button onclick="send('j')"></button></label>
+    </div>
+    <div class="container">
+        <label class="item"><img  id="IMG" src=""/> </label>
+        <label class="item">TAKE A SHOT<button onclick="send('P')"></button></label>
+    </div>
+
+</div>
+</body>
+<script>
+function preventZoom(e) {
+var t2 = e.timeStamp;
+var t1 = e.currentTarget.dataset.lastTouch || t2;
+var dt = t2 - t1;
+var fingers = e.touches.length;
+e.currentTarget.dataset.lastTouch = t2;
+
+if (!dt || dt > 500 || fingers > 1) return; // not double-tap
+
+e.preventDefault();
+e.target.click();
+};
+var all = document.getElementById("all");
+all.addEventListener('touchstart', preventZoom);
+</script>
+</html>

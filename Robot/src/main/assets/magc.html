@@ -1,0 +1,108 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Robot Control</title>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.3/jsxgraphcore.js"></script>
+<link rel="stylesheet" type="text/css" href="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css">
+<style>
+body {
+    font-family: sans-serif;
+    color: #555;
+    background-color: #eee;
+    width:100%;
+}
+
+.container {
+    margin: 10px;
+    border: 5px solid #555;
+    display: table;
+    table-layout: fixed;
+    width: 900px;
+    text-align: center;
+}
+.item {
+    border: 5px solid #555;
+    display: table-cell;
+    height: 100px;
+    vertical-align: middle;
+    font-size: 500%;
+}
+.item button {
+    background-color: transparent;
+    position: absolute;
+    left: -1000px;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+</style>
+
+</head>
+<body>
+<div id="jxgbox" class="jxgbox" style="width: 600px; height: 600px;"></div>
+    <div class="container">
+        <label class="item">Push<button onclick="send('pushed')"></button></label>
+    </div>
+
+</body>
+<script language="javascript">
+var brd = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-480,480,480,-480], axis:true, keepaspectratio:false});
+
+var start = -4, 
+	end = 120, 
+	i = 0, 
+	step = 1, 
+	turtle = brd.create('turtle', [0, 180]);
+	  turtle.setPenSize(0.2);
+      var moveForward = function(){ 
+      i += step;
+      var x=30 + 180*Math.sin(i*2*Math.PI/end);
+	  var y=-30+180*Math.cos(i*2*Math.PI/end);  
+
+         if (i > end) {
+            return;
+         }
+         turtle.moveTo([x, y]);
+         setTimeout(moveForward, 10);
+     };
+
+  turtle.hideTurtle();
+  //moveForward();   
+
+	function fromNanoStringToJson(data) {
+				var res = data.substring(0, data.lastIndexOf("}") + 1);
+				var evJsn = JSON.parse(res);
+				return evJsn;
+	}
+  
+    console.log("robotWebUi.js : server IP= "+document.location.host);
+    var sock = new WebSocket("ws://"+document.location.host, "protocolOne");
+    
+    sock.onopen = function (event) {
+         console.log("r control : I am connected to server.....");
+ 		//document.getElementById("connection").value = 'CONNECTED';
+    };
+
+    sock.onmessage = function (event) {
+        console.log("r control: " + event.data);
+        var jsonData = fromNanoStringToJson(event.data);
+        console.log(JSON.stringify(jsonData));
+        console.log(jsonData.x);
+        console.log(jsonData.y);
+ 		turtle.moveTo([jsonData.x, jsonData.x]);
+        //alert( "onmessage " + event);
+ 		//document.getElementById("state").value = ""+event.data;
+    }
+    sock.onerror = function (error) {
+        console.log('WebSocket Error %0',  error);
+        //document.getElementById("state").value = ""+error;
+    };
+    
+	function send(message) {
+        console.log('WebSocket try to send %0',  message);
+		sock.send(message);
+	};
+
+</script>
+</html>

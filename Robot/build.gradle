@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.1"
+    defaultConfig {
+        applicationId "com.samgol.robot"
+        minSdkVersion 24
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        jackOptions {
+            enabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    provided 'com.google.android.things:androidthings:0.1-devpreview'
+    compile 'com.google.android.things.contrib:driver-pwmservo:0.1'
+    compile 'com.google.android.things.contrib:driver-ssd1306:0.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

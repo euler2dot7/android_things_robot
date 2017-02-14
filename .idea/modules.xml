@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidThingsRobot.iml" filepath="$PROJECT_DIR$/AndroidThingsRobot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Robot/Robot.iml" filepath="$PROJECT_DIR$/Robot/Robot.iml" />
+    </modules>
+  </component>
+</project>
