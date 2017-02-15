@@ -16,6 +16,6 @@ Android Things robot, controlled by  web interface: with camera, servo gimbal, d
 ### DC Motor
 ![Alt text](/img/motor.jpg?raw=true "")
 ### Micro Servo 9g
-![Alt text](/img/?servo.jpgraw=true "")
+![Alt text](/img/servo.jpg?raw=true "")
 	
 
